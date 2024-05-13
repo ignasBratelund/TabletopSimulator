@@ -9,7 +9,6 @@ export function PlayerNameModal( {playerNameModalOpen, setPlayerNameModalOpen} :
         if(playerNameField !== ""){
             setPlayerName(playerNameField);
             setPlayerNameModalOpen(false);
-            setPlayerNameModalOpen(false);
         }
     }
     return (

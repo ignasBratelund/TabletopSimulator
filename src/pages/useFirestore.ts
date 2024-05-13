@@ -20,10 +20,10 @@ export const getTable = async (tableName: string) => {
     return objectList;
 }
 
-export const writeToTable = async (tableName: string, object: any) => {
+export const writeToTable = async (tableName: string, object: any): Promise<string> => {
     const tableCol = collection(db, tableName);
-    await addDoc(tableCol, object).then(result => {
-        console.log(result);
+    return await addDoc(tableCol, object).then(result => {
+        return result.id;
     });
 }
 
