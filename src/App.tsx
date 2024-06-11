@@ -6,10 +6,12 @@ import {GamePage} from "./pages/gamepage/GamePage";
 function App() {
   return (
       <Router>
-        <Routes>
-          <Route path="/" element={<HomePage/>} />
-          <Route path="/:id" element={<GamePage/>} />
-        </Routes>
+          <div className={"backgroud-grey"}>
+              <Routes>
+                  <Route path="/" element={<HomePage/>} />
+                  <Route path="/game/:id" element={<GamePage/>} />
+              </Routes>
+          </div>
       </Router>
   );
 }

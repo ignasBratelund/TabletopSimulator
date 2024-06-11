@@ -31,7 +31,7 @@ export default function LobbyCard({ game }: LobbyCardProps) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={() => navigate("/" + game.id)}>Join Game</Button>
+                <Button size="small" onClick={() => navigate("/game/" + game.id)}>Join Game</Button>
             </CardActions>
         </Card>
     );

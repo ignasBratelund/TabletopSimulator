@@ -13,21 +13,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 // const docRef = doc(db, 'collection/doc');
-export const getTable = async (tableName: string) => {
+export const getCollection = async (tableName: string) => {
     const tableCol = collection(db, tableName);
     const tableSnapshot = await getDocs(tableCol);
     const objectList = tableSnapshot.docs.map(doc => ({id: doc.id, data:doc.data()}));
     return objectList;
 }
 
-export const writeToTable = async (tableName: string, object: any): Promise<string> => {
+export const addDocument = async (tableName: string, object: any): Promise<string> => {
     const tableCol = collection(db, tableName);
     return await addDoc(tableCol, object).then(result => {
         return result.id;
     });
 }
 
-export const updateTable = async (tableName: string, id: string, object: any) => {
+export const updateDocument = async (tableName: string, id: string, object: any) => {
     await setDoc(doc(db, tableName, id), object)
 }
 
@@ -36,14 +36,14 @@ export const deleteDocument = async (tableName: string, id: string) => {
 }
 
 export const writeToGameAndUpdateLobby = async (object: any) => {
-    writeToTable("game", object).then(id => {
-        updateTable("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
+    return addDocument("game", object).then(id => {
+        updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
         return id;
     })
 }
 
 export const deleteGameAndUpdateLobby = async (id: string) => {
     deleteDocument("game", id).then(() => {
-        updateTable("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
+        updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
     })
 }

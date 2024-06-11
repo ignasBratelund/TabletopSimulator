@@ -12,10 +12,12 @@ export function NewGameModal( {NewGameModalOpen, setNewGameModalOpen} : {NewGame
     const [error, setError] = useState<boolean>(false);
     const shuffledDrawPile = shuffleArray(freshDrawPile);
     const navigate = useNavigate();
-    const onSubmitNewGame = () => {
+    const onSubmitNewGame = async () => {
         if(newGameNameField !== ""){
+            writeToGameAndUpdateLobby({name: newGameNameField, turn: 1, players: [playerName], drawPile: shuffledDrawPile, createTime: new Date()}).then((id) => {
+                navigate("/game/" + id);
+            });
             setNewGameModalOpen(false);
-            writeToGameAndUpdateLobby({name: newGameNameField, turn: 1, players: [playerName], drawPile: shuffledDrawPile, createTime: new Date()}).then((response) => {navigate("/" + response)});
         }else {
             setError(true);
         }
