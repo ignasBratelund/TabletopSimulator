@@ -1,6 +1,8 @@
-import {Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, CardHeader, IconButton, Typography} from "@mui/material";
 import {GameDTO} from "../models.types";
 import {useNavigate} from "react-router-dom";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import {deleteGameAndUpdateLobby} from "../useFirestore";
 
 interface LobbyCardProps {
     game: GameDTO;
@@ -15,7 +17,13 @@ export default function LobbyCard({ game }: LobbyCardProps) {
                 "& .MuiCardHeader-content": {
                     overflow: "hidden"
                 }
-            }}>
+
+            }}
+            action={
+                <IconButton aria-label="settings" onClick={() => deleteGameAndUpdateLobby( game.id)}>
+                    <DeleteOutlinedIcon color={"primary"} />
+                </IconButton>
+            }>
             </CardHeader>
             <CardContent>
                 <Typography variant="body2">

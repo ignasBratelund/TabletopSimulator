@@ -7,6 +7,13 @@ import LobbyCard from "./LobbyCard";
 import {Button, Container, Typography} from "@mui/material";
 import {NewGameModal} from "./NewGameModal";
 import {GameDTO} from "../models.types";
+    const getGames = async (data: DocumentData, setData:  React.Dispatch<React.SetStateAction<DocumentData[]>>) => {
+        await getTable('game').then(response => {
+            if (response !== data){
+                setData(response);
+            }
+        });
+    }
 
 export function HomePage() {
     const [data, setData] = useState<DocumentData[]>([]);
@@ -15,39 +22,24 @@ export function HomePage() {
     const [newGameModalOpen, setNewGameModalOpen] = useState<boolean>(false);
     useEffect(() => {
         const unsub = onSnapshot(doc(db, "lobbyController", "1"), () => {
-            getTest();
-            console.log("triggered")
+            getGames(data, setData);
+            console.log("Fetching lobby")
         });
-    }, [])
-    const getTest = async () => {
-        await getTable('game').then(respone => {
-            if (respone !== data){
-                setData(respone);
-            }
-            console.log(respone)
-        });
-    }
-    const lobby = data.map((item) => {return item.data as GameDTO})
+    }, [getGames])
+    const lobby = data.map((item) => {
+        const gameDTO = item.data as GameDTO;
+        gameDTO.id = item.id;
+        return gameDTO})
     return (
         <div className={"backgroud-grey"}>
             <NewGameModal NewGameModalOpen={newGameModalOpen} setNewGameModalOpen={setNewGameModalOpen}/>
             <PlayerNameModal playerNameModalOpen={playerNameModalOpen} setPlayerNameModalOpen={setPlayerNameModalOpen}/>
             <Typography variant={"h2"} sx={{textAlign: "center", marginBottom: "32px"}}>Join a game or <Button className={"button-as-h3"} variant={"text"} onClick={() => setNewGameModalOpen(true)}>Create your own</Button> </Typography>
-            {/*<button onClick={() => getTest()}>Click me</button>*/}
-            {/*<Button variant={"outlined"} onClick={() => {*/}
-            {/*    writeToTable("test", {field1: "dsaas", field2:345})*/}
-            {/*    updateTable("lobbyController", "1", {i: Math.random().toString(36).substring(3)})*/}
-            {/*}}>Click me</Button>*/}
             <Container className={"card-container"} maxWidth="xl" >
-                {lobby.map((item) => {
-                    return <LobbyCard game={item}/>
+                {lobby.map((game) => {
+                    return <LobbyCard key={game.id} game={game}/>
                 })}
             </Container>
-            {/*<ul>*/}
-            {/*    {data.map((item) => {*/}
-            {/*        return <li key={item.id}>{item.data.field1}</li>*/}
-            {/*    })}*/}
-            {/*</ul>*/}
         </div>
     );
 }

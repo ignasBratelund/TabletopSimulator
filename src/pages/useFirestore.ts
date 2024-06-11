@@ -1,4 +1,4 @@
-import {collection, getDocs, getFirestore, doc, setDoc, addDoc} from "firebase/firestore";
+import {collection, getDocs, getFirestore, doc, setDoc, addDoc, deleteDoc} from "firebase/firestore";
 import {initializeApp} from "firebase/app";
 
 const firebaseConfig = {
@@ -28,7 +28,22 @@ export const writeToTable = async (tableName: string, object: any): Promise<stri
 }
 
 export const updateTable = async (tableName: string, id: string, object: any) => {
-    await setDoc(doc(db, tableName, id), object).then(result => {
-        console.log(result);
-    });
+    await setDoc(doc(db, tableName, id), object)
+}
+
+export const deleteDocument = async (tableName: string, id: string) => {
+    await deleteDoc(doc(db, tableName, id))
+}
+
+export const writeToGameAndUpdateLobby = async (object: any) => {
+    writeToTable("game", object).then(id => {
+        updateTable("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
+        return id;
+    })
+}
+
+export const deleteGameAndUpdateLobby = async (id: string) => {
+    deleteDocument("game", id).then(() => {
+        updateTable("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
+    })
 }

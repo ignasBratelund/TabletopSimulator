@@ -43,13 +43,13 @@ I
 src/index.css,c\5\c5d38a62d1faae90a2acaa34b79a7ef365c917e4
 S
 #src/pages/homepage/NewGameModal.tsx,2\9\296dd4d229916aa62ec3e123937fe3290f424140
-;
-src/util.ts,3\e\3e10dbfd42e9d8ac4c97d16eec76cc2b7c6124e6
-@
-src/arrayUtil.ts,5\4\5471c994d3067fc3df225989fa7bc6255c988c2c
 =
 tsconfig.json,6\1\61ebb9fd6e8cf9082658121d5d81e297791dacd0
 K
 src/pages/Util/arrayUtil.ts,8\e\8e50428885a8efe3eee68fe5842b59053913558f
 ]
 -.idea/sonarlint/securityhotspotstore/index.pb,8\8\88a9255124c95bdc913197c120a8d560edc59c8e
+]
+-node_modules/@mui/material/Button/Button.d.ts,2\8\288f2cf5e933bebd9a7f1835400d11464979b418
+[
++node_modules/@mui/material/colors/grey.d.ts,1\d\1d604e7cf31f59972f0e7141545a7adf899c602f
