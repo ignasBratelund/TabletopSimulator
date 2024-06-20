@@ -53,3 +53,9 @@ K
 -node_modules/@mui/material/Button/Button.d.ts,2\8\288f2cf5e933bebd9a7f1835400d11464979b418
 [
 +node_modules/@mui/material/colors/grey.d.ts,1\d\1d604e7cf31f59972f0e7141545a7adf899c602f
+D
+public/manifest.json,4\2\42e89cd2213b9d5dfae4f63522702c623170d792
+Z
+*node_modules/@types/react/ts5.0/index.d.ts,8\a\8ae2817b0ca0f3b8a6dbd3a697ec0bc6018b5118
+O
+node_modules/csstype/index.d.ts,9\2\92ec370855811a3f06a38db3b800f6d266d3381a

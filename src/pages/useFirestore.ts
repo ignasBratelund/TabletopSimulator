@@ -35,7 +35,7 @@ export const deleteDocument = async (tableName: string, id: string) => {
     await deleteDoc(doc(db, tableName, id))
 }
 
-export const writeToGameAndUpdateLobby = async (object: any) => {
+export const addGameAndUpdateLobby = async (object: any) => {
     return addDocument("game", object).then(id => {
         updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
         return id;
@@ -44,6 +44,12 @@ export const writeToGameAndUpdateLobby = async (object: any) => {
 
 export const deleteGameAndUpdateLobby = async (id: string) => {
     deleteDocument("game", id).then(() => {
+        updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
+    })
+}
+
+export const updateGameAndUpdateLobby = async (id: string, object: any) => {
+    await updateDocument("game", id, object).then(() => {
         updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
     })
 }

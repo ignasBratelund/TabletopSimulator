@@ -3,12 +3,11 @@ import {GameDTO} from "../models.types";
 import {useNavigate} from "react-router-dom";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import {deleteGameAndUpdateLobby} from "../useFirestore";
+import {usePlayerName} from "../usePlayerName";
 
-interface LobbyCardProps {
-    game: GameDTO;
-}
-export default function LobbyCard({ game }: LobbyCardProps) {
+export default function LobbyCard({ game }: { game: GameDTO }) {
     const navigate = useNavigate();
+    const [playerName] = usePlayerName();
     return (
         <Card sx={{ width: 275 }}>
             <CardHeader title={<Typography noWrap variant="h5" >{game.name}</Typography>} sx={{
@@ -19,7 +18,7 @@ export default function LobbyCard({ game }: LobbyCardProps) {
                 }
 
             }}
-            action={
+            action={ game.admin === playerName &&
                 <IconButton aria-label="settings" onClick={() => deleteGameAndUpdateLobby( game.id)}>
                     <DeleteOutlinedIcon color={"primary"} />
                 </IconButton>
