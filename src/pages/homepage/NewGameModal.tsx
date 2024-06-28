@@ -3,18 +3,15 @@ import React, {useState} from "react";
 import {usePlayerName} from "../usePlayerName";
 import {addGameAndUpdateLobby} from "../useFirestore";
 import {useNavigate} from "react-router-dom";
-import {shuffleArray} from "../Util/arrayUtil";
-const freshDrawPile = [1,1,1,1,1,1,2,2,3,3,4,4,5,5,6,6,7,8,9];
 
 export function NewGameModal( {NewGameModalOpen, setNewGameModalOpen} : {NewGameModalOpen : boolean, setNewGameModalOpen : React.Dispatch<React.SetStateAction<boolean>>}) {
     const [playerName] = usePlayerName();
     const [newGameNameField, setNewGameNameField] = useState<string>(playerName + "'s game");
     const [error, setError] = useState<boolean>(false);
-    const shuffledDrawPile = shuffleArray(freshDrawPile);
     const navigate = useNavigate();
     const onSubmitNewGame = async () => {
         if(newGameNameField !== ""){
-            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, score: 0, hand:[]}], drawPile: shuffledDrawPile, createTime: new Date(), admin: playerName, log: [{action: playerName + " joined the game", timestamp: new Date()}]}).then((id) => {
+            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, score: 0, hand:[]}], drawPile: [], createTime: new Date(), admin: playerName, log: [{action: playerName + " joined the game", timestamp: new Date()}]}).then((id) => {
                 navigate("/game/" + id);
             });
             setNewGameModalOpen(false);

@@ -28,6 +28,7 @@ html {background-color: whitesmoke}
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .flex-grow1{
@@ -61,22 +62,27 @@ html {background-color: whitesmoke}
     height: 100%;
 }
 
+.width-100 {
+    width: 100%;
+}
+
 .game-height {
     height: calc(100vh - 200px);
 }
 
-.margin-16 {
+.m-16 {
     margin: 16px;
+}
+
+.mt-16 {
+    margin-top: 16px;
 }
 
 .height-100-minus-32px {
     height: calc(100% - 32px);
 }
 
-.card-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 240px;
+.margin-top-auto {
     margin-top: auto;
 }
+
