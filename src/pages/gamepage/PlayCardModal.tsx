@@ -152,7 +152,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     if (card.number === 5){
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
-                game.log.push({action: playerName + " played the " + cardInfo.get(card.number)?.name + " and forced " + game.players[i].name + " to discard their hand " + game.players[i].name + " had a " + cardInfo.get(game.players[i].hand[0])?.name, timestamp: new Date()});
+                game.log.push({action: playerName + " played the " + cardInfo.get(card.number)?.name + " and forced " + game.players[i].name + " to discard their " + cardInfo.get(game.players[i].hand[0])?.name, timestamp: new Date()});
                 if (game.players[i].hand[0] === 9){
                     game.players[i].hand = [];
                 }
