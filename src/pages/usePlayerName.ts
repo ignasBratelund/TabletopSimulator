@@ -1,11 +1,19 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-export function usePlayerName(): [string | null, (newName: string) => void] {
-    const defaultPlayerName= localStorage.getItem("tabletop-playerName");
-    const [playerName, setPlayerName] = useState<string | null>(defaultPlayerName);
-    function setPlayerNameAndStore(newName: string) {
-        setPlayerName(newName);
-        localStorage.setItem("tabletop-playerName", newName);
-    }
-    return [ playerName, setPlayerNameAndStore ];
+export function usePlayerName() {
+    const [playerName, setPlayerName] = useState<string | null>(localStorage.getItem("tabletop-playerName"));
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setPlayerName(localStorage.getItem("tabletop-playerName"));
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+    return [playerName, setPlayerName] as const;
 }

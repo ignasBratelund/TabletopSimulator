@@ -24,6 +24,11 @@ html {background-color: whitesmoke}
     gap: 1rem;
 }
 
+.flex-no-gap{
+    display: flex;
+    gap: 0;
+}
+
 .flex-column{
     display: flex;
     flex-direction: column;
@@ -84,5 +89,13 @@ html {background-color: whitesmoke}
 
 .margin-top-auto {
     margin-top: auto;
+}
+
+.justify-space-between {
+    justify-content: space-between;
+}
+
+.justify-end {
+    justify-content: flex-end;
 }
 

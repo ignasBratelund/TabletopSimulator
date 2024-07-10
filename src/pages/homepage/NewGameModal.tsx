@@ -11,7 +11,7 @@ export function NewGameModal( {NewGameModalOpen, setNewGameModalOpen} : {NewGame
     const navigate = useNavigate();
     const onSubmitNewGame = async () => {
         if(newGameNameField !== ""){
-            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, score: 0, hand:[]}], drawPile: [], createTime: new Date(), admin: playerName, log: [{action: playerName + " joined the game", timestamp: new Date()}]}).then((id) => {
+            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, score: 0, hand:[]}], drawPile: [], createTime: new Date(), admin: playerName, log: [{action: playerName + " joined the game", timestamp: new Date(), players: [playerName!]}]}).then((id) => {
                 navigate("/game/" + id);
             });
             setNewGameModalOpen(false);

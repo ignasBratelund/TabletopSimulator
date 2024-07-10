@@ -12,6 +12,7 @@ export type GameDTO = {
 export type action = {
     action: string;
     timestamp: Date;
+    players: string[];
 }
 
 export type PlayerDTO = {
