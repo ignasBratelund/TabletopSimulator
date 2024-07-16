@@ -7,7 +7,7 @@ export function PlayerNameModal( {playerNameModalOpen, setPlayerNameModalOpen} :
     const [, setPlayerName] = usePlayerName();
     const onSubmitPlayerName = () => {
         if(playerNameField !== ""){
-            setPlayerName(playerNameField);
+            localStorage.setItem("playerName", playerNameField)
             setPlayerNameModalOpen(false);
         }
     }
