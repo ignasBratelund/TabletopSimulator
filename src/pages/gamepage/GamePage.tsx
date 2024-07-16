@@ -92,7 +92,6 @@ export function GamePage() {
     const textFieldRef = React.useRef<HTMLTextAreaElement>(null);
     const navigate = useNavigate();
     const hasAddedPlayer = useRef(false);
-    const [playerNameModalOpen, setPlayerNameModalOpen] = useState<boolean>(playerName == null);
 
     useEffect(() => {
         if(textFieldRef.current !== null) {
@@ -153,7 +152,7 @@ export function GamePage() {
 
     return (
         <div className="height-100vh flex-column align-center">
-            <PlayerNameModal playerNameModalOpen={playerNameModalOpen} setPlayerNameModalOpen={setPlayerNameModalOpen}/>
+            {!playerName && <PlayerNameModal/>}
             {playedCard && <PlayCardModal card={playedCard} setCard={setPlayedCard} changeCard={changePlayedCard} game={game}/>}
             <div>
                 <Typography variant={"h2"} sx={{textAlign: "center", marginBottom: "64px"}}> {game?.name} </Typography>

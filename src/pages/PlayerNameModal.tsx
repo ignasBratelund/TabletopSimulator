@@ -1,18 +1,17 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import React, {useState} from "react";
-import {usePlayerName} from "./usePlayerName";
 
-export function PlayerNameModal( {playerNameModalOpen, setPlayerNameModalOpen} : {playerNameModalOpen : boolean, setPlayerNameModalOpen : React.Dispatch<React.SetStateAction<boolean>>}) {
+export function PlayerNameModal() {
     const [playerNameField, setPlayerNameField] = useState<string>("");
-    const [, setPlayerName] = usePlayerName();
     const onSubmitPlayerName = () => {
         if(playerNameField !== ""){
             localStorage.setItem("playerName", playerNameField)
-            setPlayerNameModalOpen(false);
+            window.location.reload()
         }
     }
+
     return (
-        <Dialog sx={{top : "-50%"}} open={playerNameModalOpen}>
+        <Dialog sx={{top : "-50%"}} open={true}>
             <DialogTitle>Enter your username</DialogTitle>
             <DialogContent>
                 <TextField

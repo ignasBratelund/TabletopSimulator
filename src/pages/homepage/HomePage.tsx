@@ -19,7 +19,6 @@ const getGames = async (data: DocumentData, setData:  React.Dispatch<React.SetSt
 export function HomePage() {
     const [data, setData] = useState<DocumentData[]>([]);
     const [playerName, ] = usePlayerName();
-    const [playerNameModalOpen, setPlayerNameModalOpen] = useState<boolean>(playerName == null);
     const [newGameModalOpen, setNewGameModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -36,7 +35,7 @@ export function HomePage() {
     return (
         <div>
             <NewGameModal NewGameModalOpen={newGameModalOpen} setNewGameModalOpen={setNewGameModalOpen}/>
-            <PlayerNameModal playerNameModalOpen={playerNameModalOpen} setPlayerNameModalOpen={setPlayerNameModalOpen}/>
+            {!playerName && <PlayerNameModal/>}
             <Typography variant={"h2"} sx={{textAlign: "center", marginBottom: "32px"}}>Join a game or <Button className={"button-as-h3"} variant={"text"} onClick={() => setNewGameModalOpen(true)}>Create your own</Button> </Typography>
             <Container className={"card-container"} maxWidth="xl" >
                 {lobby.map((game) => {
