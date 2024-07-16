@@ -63,7 +63,7 @@ function kickPlayer(game: GameDTO, playerName: string) {
 function resetGame(game: GameDTO) {
     game.turn = 0;
     game.players = shuffleArray(game.players);
-    game.drawPile = shuffleArray(freshDrawPile);
+    game.drawPile = shuffleArray(freshDrawPile.slice());
     for (let i = 0; i < game.players.length; i++) {
         game.players[i].isProtected = false;
         const topCard = game.drawPile.pop();
@@ -114,7 +114,6 @@ export function GamePage() {
         return () => unsub();
     }, [id])
 
-    console.log("name: " + playerName)
     if(game !== undefined && playerName !== null){
         if(!game.players.map(p => p.name).includes(playerName)){
             if(!hasAddedPlayer.current){
