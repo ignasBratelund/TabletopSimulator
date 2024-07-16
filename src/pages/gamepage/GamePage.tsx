@@ -48,6 +48,20 @@ function shuffleArray<T>(array: T[]): T[] {
     return array;
 }
 
+export function getAllCardsFlat(game: GameDTO): (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[] {
+    let allCards: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[] = [];
+
+    // Add all player hands to the array
+    for (const player of game.players) {
+        allCards = allCards.concat(player.hand);
+    }
+
+    // Add the draw pile to the array
+    allCards = allCards.concat(game.drawPile);
+
+    return allCards;
+}
+
 function kickPlayer(game: GameDTO, playerName: string) {
     const playerIndex = getPlayerIndex(game, playerName);
     if (playerIndex === -1){
@@ -205,6 +219,14 @@ export function GamePage() {
                         </div>
                     </div>
                     <div className="flex-column flex-grow1">
+                        <Card sx={{width: "calc(100% - 32px)", padding: 2}}>{
+                            <div>
+
+                                {[1,2,3,4,5,6,7,8,9].map((card) => (
+                                    <Typography variant="body1" key={card}>{cardInfo.get(card as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)!.name + ": " + getAllCardsFlat(game).filter(c => c === card).length + "/" +  freshDrawPile.filter(c => c === card).length}</Typography>
+                                ))}
+                            </div>
+                        }</Card>
                         <Typography
                             ref={textFieldRef}
                             border={2}
@@ -212,7 +234,7 @@ export function GamePage() {
                             variant={"body1"}
                             sx={{
                                 whiteSpace: "pre-wrap",
-                                height: "100%",
+                                height: "calc(100% - 284px)",
                                 overflowY: "scroll",
                                 padding: 1,
                                 borderRadius: 2,

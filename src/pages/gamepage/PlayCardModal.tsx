@@ -26,12 +26,12 @@ export function incrementTurn(game: GameDTO){
             }
         }
         game.players[game.turn].isProtected = false;
-        if(game.drawPile.length >= 1 && game.players[game.turn].hand.length === 1){
+        if(game.drawPile.length > 1 && game.players[game.turn].hand.length === 1){
             game.players[game.turn].hand.push(game.drawPile.pop()!);
         } else {
             game.turn = -1;
+            let leadingPlayersIndex = [-1];
             for (let i = 0; i < game.players.length; i++){
-                let leadingPlayersIndex = [-1];
                 if (game.players[i].hand.length > 0){
                     game.log.push({action: game.players[i].name + " has a " + game.players[i].hand, timestamp: new Date(), players: game.players.map(p => p.name)});
                     if (leadingPlayersIndex[0] === -1){
@@ -44,15 +44,15 @@ export function incrementTurn(game: GameDTO){
                         }
                     }
                 }
-                if (leadingPlayersIndex.length === 1){
-                    game.log.push({action: game.players[leadingPlayersIndex[0]].name + " won the round", timestamp: new Date(), players: game.players.map(p => p.name)});
-                    game.players[leadingPlayersIndex[0]].score += 1;
-                }
-                else {
-                    game.log.push({action: "The round was a tie between " + leadingPlayersIndex.map(i => game.players[i].name).join(", "), timestamp: new Date(), players: game.players.map(p => p.name)});
-                    for (let i = 0; i < leadingPlayersIndex.length; i++){
-                        game.players[leadingPlayersIndex[i]].score += 1;
-                    }
+            }
+            if (leadingPlayersIndex.length === 1){
+                game.log.push({action: game.players[leadingPlayersIndex[0]].name + " won the round", timestamp: new Date(), players: game.players.map(p => p.name)});
+                game.players[leadingPlayersIndex[0]].score += 1;
+            }
+            else {
+                game.log.push({action: "The round was a tie between " + leadingPlayersIndex.map(i => game.players[i].name).join(", "), timestamp: new Date(), players: game.players.map(p => p.name)});
+                for (let i = 0; i < leadingPlayersIndex.length; i++){
+                    game.players[leadingPlayersIndex[i]].score += 1;
                 }
             }
         }
@@ -124,7 +124,6 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
         removeCardFromHand(game, playerName, card.number);
     }
     //Priest
-    //TODO: fix logging
     if (card.number === 2){
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
@@ -160,16 +159,15 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     }
     //Prince
     if (card.number === 5){
+        removeCardFromHand(game, playerName, card.number);
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
                 game.log.push({action: playerName + " played the " + cardInfo.get(card.number)?.name + " and forced " + game.players[i].name + " to discard their " + cardInfo.get(game.players[i].hand[0])?.name + ".", timestamp: new Date(), players: game.players.map(p => p.name)});
-                game.players[i].hand = [];
-                if (game.players[i].hand[0] !== 9){
+                if (game.players[i].hand.pop() !== 9){
                     game.players[i].hand.push(game.drawPile.pop()!);
                 }
             }
         }
-        removeCardFromHand(game, playerName, card.number);
     }
     //TODO: handle Councler
     //King
