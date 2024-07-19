@@ -260,24 +260,6 @@ export function GamePage() {
                                 </Typography>
                             )}
                         </Box>
-                    {/*    <Typography*/}
-                    {/*        ref={textFieldRef}*/}
-                    {/*        border={2}*/}
-                    {/*        display="block"*/}
-                    {/*        variant={"body1"}*/}
-                    {/*        sx={{*/}
-                    {/*            whiteSpace: "pre-wrap",*/}
-                    {/*            height: "calc(100% - 284px)",*/}
-                    {/*            overflowY: "scroll",*/}
-                    {/*            padding: 1,*/}
-                    {/*            borderRadius: 2,*/}
-                    {/*            borderColor: "rgba(0, 0, 0, 0.23)",*/}
-                    {/*            color: "rgba(0, 0, 0, 0.70)",*/}
-                    {/*            lineHeight: "1.5",*/}
-                    {/*        }*/}
-                    {/*    }>*/}
-                    {/*        {game.log.filter(message => message.players.includes(playerName?? "")).map((action) => action.action).join("\n")}*/}
-                    {/*    </Typography>*/}
                     </div>
                 </div>
             </Card>
