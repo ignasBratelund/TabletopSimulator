@@ -1,5 +1,5 @@
 export type GameDTO = {
-    log: action[];
+    log: message[];
     id: string;
     name: string;
     turn: number;
@@ -9,10 +9,11 @@ export type GameDTO = {
     admin: string;
 }
 
-export type action = {
-    action: string;
+export type message = {
+    message: string;
     timestamp: Date;
-    players: string[];
+    sendingPlayer: string | null;
+    receivingPlayers: string[];
 }
 
 export type PlayerDTO = {
@@ -20,6 +21,7 @@ export type PlayerDTO = {
     hand:  (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
     score: number;
     isProtected: boolean;
+    color: string;
 }
 
 export type CardDTO = {

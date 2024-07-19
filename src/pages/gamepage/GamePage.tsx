@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {Button, Card, Chip, IconButton, Typography} from "@mui/material";
+import {Box, Button, Card, Chip, IconButton, Typography} from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db, updateGameAndUpdateLobby} from "../useFirestore";
@@ -12,6 +12,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {PlayerNameModal} from "../PlayerNameModal";
 
 export const freshDrawPile = [1,1,1,1,1,1,2,2,3,3,4,4,5,5,6,6,7,8,9] as  (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
+export const colors = ["#ffd4d4", "#adffa2", "#a2ffff", "#d5a2ff", "#fffaa2", "#a2a2ff", "#ffd8a2", "#ffa2fc"]
 
 export function getPlayer(game: GameDTO, playerName: string | null) {
     if (!playerName){
@@ -68,7 +69,7 @@ function kickPlayer(game: GameDTO, playerName: string) {
         return;
     }
     game.players.splice(playerIndex, 1);
-    game.log.push({action: playerName + " has left the game", timestamp: new Date(), players: game.players.map(p => p.name)});
+    game.log.push({message: playerName + " has left the game", timestamp: new Date(), sendingPlayer:null, receivingPlayers: game.players.map(p => p.name)});
     game.turn --;
     incrementTurn(game);
     updateGameAndUpdateLobby(game.id, game);
@@ -93,8 +94,18 @@ function resetGame(game: GameDTO) {
             console.log("No more cards in draw pile") // This should never happen
         }
     }
-    game.log.push({action: "A new round has started", timestamp: new Date(), players: game.players.map(p => p.name)});
+    game.log.push({message: "A new round has started", timestamp: new Date(), sendingPlayer:null, receivingPlayers: game.players.map(p => p.name)});
     updateGameAndUpdateLobby(game.id, game);
+}
+
+function nextColor(game: GameDTO) {
+    const usedColors = game.players.map(p => p.color);
+    for (const color of colors){
+        if (!usedColors.includes(color)){
+            return color;
+        }
+    }
+    return colors[0];
 }
 
 export function GamePage() {
@@ -131,8 +142,8 @@ export function GamePage() {
     if(game !== undefined && playerName !== null){
         if(!game.players.map(p => p.name).includes(playerName)){
             if(!hasAddedPlayer.current){
-                game.players.push({name: playerName, score: 0, hand: [], isProtected: false});
-                game.log.push({action: playerName + " joined the game", timestamp: new Date(), players: game.players.map(p => p.name)});
+                game.players.push({name: playerName, score: 0, hand: [], isProtected: false, color: nextColor(game)});
+                game.log.push({message: playerName + " joined the game", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 updateGameAndUpdateLobby(game.id, game)
                 hasAddedPlayer.current= true;
             } else {
@@ -177,7 +188,7 @@ export function GamePage() {
                     <div className="flex-column flex-grow1">
                         <Typography variant={"h6"} sx={{textAlign: "center"}}>Players</Typography>
                         {game.players.map((player) => {
-                            return <Chip key={player.name} variant="outlined" sx={{"& .MuiChip-label": {width: "100%"}}} label={
+                            return <Chip key={player.name} variant="outlined" sx={{"& .MuiChip-label": {width: "100%"}, background: player.color}} label={
                                 <div className={"flex-no-gap width-100 align-center"}>
                                     <div className={"flex-grow1 flex-no-gap"}>
                                         {getIsAdmin(game, playerName) && !getIsAdmin(game, player.name) && <IconButton size={"small"} onClick={() => kickPlayer(game, player.name)}><CloseIcon fontSize={"inherit"}/> </IconButton>}
@@ -227,24 +238,46 @@ export function GamePage() {
                                 ))}
                             </div>
                         }</Card>
-                        <Typography
+                        <Box
                             ref={textFieldRef}
-                            border={2}
-                            display="block"
-                            variant={"body1"}
                             sx={{
-                                whiteSpace: "pre-wrap",
-                                height: "calc(100% - 284px)",
-                                overflowY: "scroll",
-                                padding: 1,
-                                borderRadius: 2,
-                                borderColor: "rgba(0, 0, 0, 0.23)",
-                                color: "rgba(0, 0, 0, 0.70)",
-                                lineHeight: "1.5",
-                            }
-                        }>
-                            {game.log.filter(message => message.players.includes(playerName?? "")).map((action) => action.action).join("\n")}
-                        </Typography>
+                                    whiteSpace: "pre-wrap",
+                                    height: "calc(100% - 284px)",
+                                    overflowY: "scroll",
+                                    borderRadius: 2,
+                                    borderColor: "rgba(0, 0, 0, 0.23)",
+                                    color: "rgba(0, 0, 0, 0.70)",
+                                    lineHeight: "1.5",
+                                }}
+                        >
+                            {game.log.filter(message => message.receivingPlayers.includes(playerName?? "")).map((message) =>
+                                <Typography
+                                    display="block"
+                                    variant={"body1"}
+                                    sx={{paddingX: 1, paddingY: 0.2, backgroundColor: getPlayer(game, message.sendingPlayer)?.color}}
+                                    >
+                                    {message.message}
+                                </Typography>
+                            )}
+                        </Box>
+                    {/*    <Typography*/}
+                    {/*        ref={textFieldRef}*/}
+                    {/*        border={2}*/}
+                    {/*        display="block"*/}
+                    {/*        variant={"body1"}*/}
+                    {/*        sx={{*/}
+                    {/*            whiteSpace: "pre-wrap",*/}
+                    {/*            height: "calc(100% - 284px)",*/}
+                    {/*            overflowY: "scroll",*/}
+                    {/*            padding: 1,*/}
+                    {/*            borderRadius: 2,*/}
+                    {/*            borderColor: "rgba(0, 0, 0, 0.23)",*/}
+                    {/*            color: "rgba(0, 0, 0, 0.70)",*/}
+                    {/*            lineHeight: "1.5",*/}
+                    {/*        }*/}
+                    {/*    }>*/}
+                    {/*        {game.log.filter(message => message.players.includes(playerName?? "")).map((action) => action.action).join("\n")}*/}
+                    {/*    </Typography>*/}
                     </div>
                 </div>
             </Card>

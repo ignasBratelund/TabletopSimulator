@@ -3,6 +3,8 @@ import React, {useState} from "react";
 import {usePlayerName} from "../usePlayerName";
 import {addGameAndUpdateLobby} from "../useFirestore";
 import {useNavigate} from "react-router-dom";
+import {GameDTO} from "../models.types";
+import {colors} from "../gamepage/GamePage";
 
 export function NewGameModal( {NewGameModalOpen, setNewGameModalOpen} : {NewGameModalOpen : boolean, setNewGameModalOpen : React.Dispatch<React.SetStateAction<boolean>>}) {
     const [playerName] = usePlayerName();
@@ -11,7 +13,7 @@ export function NewGameModal( {NewGameModalOpen, setNewGameModalOpen} : {NewGame
     const navigate = useNavigate();
     const onSubmitNewGame = async () => {
         if(newGameNameField !== ""){
-            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, score: 0, hand:[]}], drawPile: [], createTime: new Date(), admin: playerName, log: [{action: playerName + " joined the game", timestamp: new Date(), players: [playerName!]}]}).then((id) => {
+            addGameAndUpdateLobby({name: newGameNameField, turn: -1, players: [{name: playerName, hand:[], score: 0, isProtected: false, color:colors[0]}], drawPile: [], createTime: new Date(), admin: playerName, log: [{message: playerName + " joined the game", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: [playerName!]}]} as Partial<GameDTO>).then((id) => {
                 navigate("/game/" + id);
             });
             setNewGameModalOpen(false);
