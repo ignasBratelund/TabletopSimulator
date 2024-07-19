@@ -28,6 +28,7 @@ export function HomePage() {
         });
         return () => unsub();
     }, [getGames])
+
     const lobby = data.map((item) => {
         const gameDTO = item.data as GameDTO;
         gameDTO.id = item.id;

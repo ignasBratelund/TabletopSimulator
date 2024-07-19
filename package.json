@@ -1,7 +1,7 @@
 {
   "name": "table-top-simulator",
   "version": "0.1.0",
-  "homepage": "https://ignasBratelund.github.io/tabletop-simulator",
+  "homepage": "https://ignasbratelund.github.io/TabletopSimulator",
   "private": true,
   "dependencies": {
     "@emotion/css": "11.11.2",
