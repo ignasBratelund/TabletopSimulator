@@ -230,14 +230,14 @@ export function GamePage() {
                         </div>
                     </div>
                     <div className="flex-column flex-grow1">
-                        <Card sx={{width: "calc(100% - 32px)", padding: 2}}>{
+                        <Box sx={{width: "calc(100% - 32px)", padding: 2, border: 1, borderRadius: 2, borderColor: "rgba(0, 0, 0, 0.23)"}}>{
                             <div>
 
                                 {[1,2,3,4,5,6,7,8,9].map((card) => (
                                     <Typography variant="body1" key={card}>{cardInfo.get(card as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)!.name + ": " + getAllCardsFlat(game).filter(c => c === card).length + "/" +  freshDrawPile.filter(c => c === card).length}</Typography>
                                 ))}
                             </div>
-                        }</Card>
+                        }</Box>
                         <Box
                             ref={textFieldRef}
                             sx={{
@@ -245,6 +245,7 @@ export function GamePage() {
                                     height: "calc(100% - 284px)",
                                     overflowY: "scroll",
                                     borderRadius: 2,
+                                    border: 1,
                                     borderColor: "rgba(0, 0, 0, 0.23)",
                                     color: "rgba(0, 0, 0, 0.70)",
                                     lineHeight: "1.5",
