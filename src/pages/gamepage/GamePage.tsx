@@ -68,10 +68,13 @@ function kickPlayer(game: GameDTO, playerName: string) {
     if (playerIndex === -1){
         return;
     }
+    const isKickedPlayersTurn = getIsPlayersTurn(game, playerName);
     game.players.splice(playerIndex, 1);
     game.log.push({message: playerName + " has left the game", timestamp: new Date(), sendingPlayer:null, receivingPlayers: game.players.map(p => p.name)});
-    game.turn --;
-    incrementTurn(game);
+    if (isKickedPlayersTurn){
+        game.turn --;
+        incrementTurn(game);
+    }
     updateGameAndUpdateLobby(game.id, game);
 }
 

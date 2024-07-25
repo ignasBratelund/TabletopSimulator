@@ -24,6 +24,18 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script>
+      (function() {
+        // This checks if the 404 redirect has occurred
+        if (window.location.pathname.indexOf('404.html') === -1) return;
+
+        // Replace the '404.html' with the correct path
+        window.history.replaceState(null, null,
+                window.location.pathname.replace('/404.html', '') +
+                window.location.search +
+                window.location.hash);
+      })();
+    </script>
     <title>Tabletop Simulator</title>
   </head>
   <body>
