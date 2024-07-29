@@ -1,0 +1,5 @@
+Implementer councler
+    Drag-and-drop councler
+Fiks bakgrunn
+Legg til snakking
+Valgfrie mengde kort

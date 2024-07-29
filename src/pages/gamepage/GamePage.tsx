@@ -157,10 +157,11 @@ export function GamePage() {
 
     if (error){
         return (
-            <div className={"flex"}>
-
-                <Typography variant={"h2"} sx={{textAlign: "center"}}> Game not found </Typography>
-                <BackButton/>
+            <div className="height-100vh flex-column align-center">
+                <div>
+                    <Typography variant={"h2"} sx={{textAlign: "center"}}> Game not found </Typography>
+                    <BackButton/>
+                </div>
             </div>
         )
     }
