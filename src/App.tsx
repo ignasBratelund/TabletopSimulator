@@ -8,8 +8,8 @@ function App() {
       <Router basename="/TabletopSimulator">
           <div className={"background-grey height-100vh"}>
               <Routes>
-                  <Route path="/game/:id" element={<GamePage/>} />
-                  <Route path="/*" element={<HomePage/>} />
+                  <Route path="/game/:id" element={<GamePage/>}/>
+                  <Route path="/*" element={<HomePage/>}/>
               </Routes>
           </div>
       </Router>

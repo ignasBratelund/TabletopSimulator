@@ -217,15 +217,12 @@ export function GamePage() {
                         <div className="flex margin-top-auto">
                             {getPlayer(game, playerName)?.hand.map((card) => {
                                 return (
-                                    <div className="flex-column margin-top-auto">
+                                    <div className="flex-column margin-top-auto" key={card}>
                                         {[5, 7].includes(card)}
                                         <Button sx={{width: "60px", alignSelf:"center"}} disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card) && getPlayer(game, playerName)?.hand.includes(8))} onClick={() => setPlayedCard(cardInfo.get(card))}>Play</Button>
-                                        <Card sx={{height: "348px", width: "208px", padding: 2}}>{
-                                            <div>
-
-                                            <Typography variant="h5" sx={{textAlign: "center"}}>{cardInfo.get(card)?.name}</Typography>
-                                            <Typography sx={{textAlign: "center", marginTop: 2}}>{cardInfo.get(card)?.description}</Typography>
-                                            </div>
+                                        <Card sx={{height: "348px", width: "208px"}}
+                                        >{
+                                            <img src={cardInfo.get(card)!.image} alt="image" width={208} height={348}/>
                                         }</Card>
                                     </div>
                                 );
@@ -235,7 +232,6 @@ export function GamePage() {
                     <div className="flex-column flex-grow1">
                         <Box sx={{width: "calc(100% - 32px)", padding: 2, border: 1, borderRadius: 2, borderColor: "rgba(0, 0, 0, 0.23)"}}>{
                             <div>
-
                                 {[1,2,3,4,5,6,7,8,9].map((card) => (
                                     <Typography variant="body1" key={card}>{cardInfo.get(card as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)!.name + ": " + getAllCardsFlat(game).filter(c => c === card).length + "/" +  freshDrawPile.filter(c => c === card).length}</Typography>
                                 ))}
@@ -256,6 +252,7 @@ export function GamePage() {
                         >
                             {game.log.filter(message => message.receivingPlayers.includes(playerName?? "")).map((message) =>
                                 <Typography
+                                    key={message.message + message.timestamp.toString()}
                                     display="block"
                                     variant={"body1"}
                                     sx={{paddingX: 1, paddingY: 0.2, backgroundColor: getPlayer(game, message.sendingPlayer)?.color}}
