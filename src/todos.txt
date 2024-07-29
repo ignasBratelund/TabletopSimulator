@@ -1,7 +1,7 @@
-Coucilor handle special cases
 Drag-and-drop councler
 Fiks bakgrunn
 Legg til snakking
 Valgfrie mengde kort
 fix update game and lobby
-add better erro
+add better error box
+Your turn modal
