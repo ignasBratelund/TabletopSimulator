@@ -213,10 +213,10 @@ export function GamePage() {
                             : getIsAdmin(game, playerName) && game.players.length > 1 &&
                             <Button sx={{width: "170px", alignSelf: "center"}} onClick={() => resetGame(game)}>Start new Round</Button>
                         }
-                        <div className="flex margin-top-auto">
+                        <div className="flex margin-top-auto width-100 justify-center">
                             {getPlayer(game, playerName)?.hand.map((card) => {
                                 return (
-                                    <Card sx={{width: "100%", aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(cardInfo.get(card))}
+                                    <Card sx={{width: "50%", maxWidth: "437px",  aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(cardInfo.get(card))}
                                     >{
                                         <img src={cardInfo.get(card)!.image} alt="image" width={"100%"} height={"100%"}/>
                                     }</Card>

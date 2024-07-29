@@ -71,6 +71,10 @@ html {background-color: whitesmoke}
     width: 100%;
 }
 
+.width-50 {
+    width: 50%;
+}
+
 .game-height {
     height: calc(100vh - 150px);
 }
