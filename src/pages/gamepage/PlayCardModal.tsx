@@ -105,7 +105,7 @@ function getOtherCardInHand(game: GameDTO, playerName: string | null, card: Card
     if (playerName){
         for (let i = 0; i < game.players.length; i++){
             if (game.players[i].name === playerName){
-                if (game.players[i].hand.length == 2){
+                if (game.players[i].hand.length === 2){
                     return game.players[i].hand[0] === card ? game.players[i].hand[1] : game.players[i].hand[0];
                 }
             }
@@ -116,7 +116,7 @@ function getOtherCardInHand(game: GameDTO, playerName: string | null, card: Card
 }
 
 export function arrayEquals(a: any[], b: any[], ignoreOrdering: boolean){
-    if(a.length != b.length){
+    if(a.length !== b.length){
         return false;
     }
     const aCopy = a.slice();
@@ -137,7 +137,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     setError("")
 
     // no opponent override
-    if (cardsWithOpponent.includes(card.number) && card.number != 5 && game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1){
+    if (cardsWithOpponent.includes(card.number) && card.number !== 5 && game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1){
         removeCardFromHand(game, playerName, card.number);
         game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         incrementTurn(game);
@@ -244,17 +244,17 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
             }
             if (i>=1){
                 game.drawPile.pop();
-                game.drawPile.unshift(selectedCouncilorCards[selectedCouncilorCards.length - i] as CardNumber);
+                game.drawPile.unshift(selectedCouncilorCards[i] as CardNumber);
             }
         }
         game.drawPile.unshift(extraCard!);
         game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         let lastCardsMessage
         if (game.drawPile.length > 3){
-            lastCardsMessage = "The card on the bottom and the second card from the bottom are now respectively " + game.drawPile[game.drawPile.length - 1] + " and " + game.drawPile[game.drawPile.length - 2] + ".";
+            lastCardsMessage = "The card on the bottom and the second card from the bottom are now respectively " + game.drawPile[game.drawPile.length - 2] + " and " + game.drawPile[game.drawPile.length - 3] + ".";
         }
         else {
-            lastCardsMessage = "The card on the bottom is now " + game.drawPile[game.drawPile.length - 1] + ".";
+            lastCardsMessage = "The card on the bottom is now " + game.drawPile[game.drawPile.length - 2] + ".";
         }
         if (lastCardsMessage){
             game.log.push({message: lastCardsMessage, timestamp: new Date(), sendingPlayer:null, receivingPlayers: [playerName!]});
@@ -333,7 +333,7 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
                 {/*<Typography>{error.trimStart()}</Typography>*/}
             </DialogContent>
             <DialogActions>
-                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8) ) || (getPlayer(game, playerName)?.hand.includes(-6) && card.number != -6)} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError, selectedCouncilorCards, possibleCouncilorCards)}>{card.number === 6? "Lock in" : "Play"}</Button>
+                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8) ) || (getPlayer(game, playerName)?.hand.includes(-6) && card.number !== -6)} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError, selectedCouncilorCards, possibleCouncilorCards)}>{card.number === 6? "Lock in" : "Play"}</Button>
             </DialogActions>
         </Dialog>
     )

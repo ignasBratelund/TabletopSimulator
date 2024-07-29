@@ -219,7 +219,7 @@ export function GamePage() {
                                 return (
                                     <Card sx={{width: "50%", maxWidth: "437px",  aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(CardInfo.get(card))}
                                     >{
-                                        <img src={CardInfo.get(card)!.image} alt="image" width={"100%"} height={"100%"}/>
+                                        <img src={CardInfo.get(card)!.image} alt={CardInfo.get(card)?.name} width={"100%"} height={"100%"}/>
                                     }</Card>
                                 );
                             })}
