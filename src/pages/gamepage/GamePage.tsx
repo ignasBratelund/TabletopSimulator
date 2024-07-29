@@ -3,7 +3,7 @@ import {Box, Button, Card, Chip, IconButton, Typography} from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import {doc, onSnapshot} from "firebase/firestore";
 import {db, updateGameAndUpdateLobby} from "../useFirestore";
-import {CardDTO, cardInfo, GameDTO} from "../models.types";
+import {CardDTO, CardInfo, CardNumber, GameDTO} from "../models.types";
 import {usePlayerName} from "../usePlayerName";
 import {incrementTurn, PlayCardModal} from "./PlayCardModal";
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {PlayerNameModal} from "../PlayerNameModal";
 
-export const freshDrawPile = [1,1,1,1,1,1,2,2,3,3,4,4,5,5,6,6,7,8,9] as  (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
+export const freshDrawPile = [1,1,1,1,1,1,2,2,3,3,4,4,5,5,6,6,7,8,9] as  (CardNumber)[];
 export const colors = ["#ffd4d4", "#adffa2", "#a2ffff", "#d5a2ff", "#fffaa2", "#a2a2ff", "#ffd8a2", "#ffa2fc"]
 
 export function getPlayer(game: GameDTO, playerName: string | null) {
@@ -49,8 +49,8 @@ function shuffleArray<T>(array: T[]): T[] {
     return array;
 }
 
-export function getAllCardsFlat(game: GameDTO): (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[] {
-    let allCards: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[] = [];
+export function getAllCardsFlat(game: GameDTO): (CardNumber)[] {
+    let allCards: (CardNumber)[] = [];
 
     // Add all player hands to the array
     for (const player of game.players) {
@@ -170,11 +170,11 @@ export function GamePage() {
         return <div></div>
     }
 
-    function changePlayedCard(card: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1)) {
+    function changePlayedCard(card: (CardNumber | -1)) {
         if (card === -1){
             setPlayedCard(undefined);
         } else {
-            setPlayedCard(cardInfo.get(card));
+            setPlayedCard(CardInfo.get(card));
         }
     }
 
@@ -217,9 +217,9 @@ export function GamePage() {
                         <div className="flex margin-top-auto width-100 justify-center">
                             {getPlayer(game, playerName)?.hand.map((card) => {
                                 return (
-                                    <Card sx={{width: "50%", maxWidth: "437px",  aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(cardInfo.get(card))}
+                                    <Card sx={{width: "50%", maxWidth: "437px",  aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(CardInfo.get(card))}
                                     >{
-                                        <img src={cardInfo.get(card)!.image} alt="image" width={"100%"} height={"100%"}/>
+                                        <img src={CardInfo.get(card)!.image} alt="image" width={"100%"} height={"100%"}/>
                                     }</Card>
                                 );
                             })}
@@ -229,7 +229,7 @@ export function GamePage() {
                         <Box sx={{width: "calc(100% - 32px)", padding: 2, border: 1, borderRadius: 2, borderColor: "rgba(0, 0, 0, 0.23)"}}>{
                             <div>
                                 {[1,2,3,4,5,6,7,8,9].map((card) => (
-                                    <Typography variant="body1" key={card}>{cardInfo.get(card as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)!.name + ": " + getAllCardsFlat(game).filter(c => c === card).length + "/" +  freshDrawPile.filter(c => c === card).length}</Typography>
+                                    <Typography variant="body1" key={card}>{CardInfo.get(card as CardNumber)!.name + ": " + getAllCardsFlat(game).filter(c => c === card).length + "/" +  freshDrawPile.filter(c => c === card).length}</Typography>
                                 ))}
                             </div>
                         }</Box>

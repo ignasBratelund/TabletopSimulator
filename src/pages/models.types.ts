@@ -15,7 +15,7 @@ export type GameDTO = {
     name: string;
     turn: number;
     players: PlayerDTO[];
-    drawPile:  (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
+    drawPile:  CardNumber[];
     createTime: Date;
     admin: string;
 }
@@ -29,21 +29,23 @@ export type message = {
 
 export type PlayerDTO = {
     name: string;
-    hand:  (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
+    hand:  CardNumber[];
     score: number;
     isProtected: boolean;
     color: string;
 }
 
 export type CardDTO = {
-    number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+    number: CardNumber;
     name: string;
     description: string;
     count: number;
     image: string;
 }
 
-export const cardInfo = new Map<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9, CardDTO>([
+export type CardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export const CardInfo = new Map<CardNumber, CardDTO>([
     [1, {number: 1, name: "Guard", description: "Name an other player and guess what card they currently have (not possible to guess guard). If you are correct, they are eliminated.", count: 6, image: guardCard}],
     [2, {number: 2, name: "Priest", description: "Look at the card in another player’s hand.", count: 2, image: priestCard}],
     [3, {number: 3, name: "Baron", description: "Compare the value of the remaining card in your hand with an another player’s card. The player with the lower-value card is eliminated.", count: 2, image: baronCard}],

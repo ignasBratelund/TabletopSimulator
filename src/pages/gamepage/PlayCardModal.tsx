@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import {usePlayerName} from "../usePlayerName";
-import {CardDTO, cardInfo, GameDTO} from "../models.types";
+import {CardDTO, CardInfo, CardNumber, GameDTO} from "../models.types";
 import {updateGameAndUpdateLobby} from "../useFirestore";
 import {getIsPlayersTurn, getPlayer, getPlayerIndex} from "./GamePage";
 
 const cardsWithOpponent = [1, 2, 3, 5, 7];
-const cardsMinusGuard = [2, 3, 4, 5, 6, 7, 8, 9] as (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
+const cardsMinusGuard = [2, 3, 4, 5, 6, 7, 8, 9] as (CardNumber)[];
 
 export function incrementTurn(game: GameDTO){
     if (game.players.filter(player => player.hand.length > 0).length >= 2){
@@ -86,13 +86,13 @@ function removeCardFromHand(game: GameDTO, playerName: string | null, card: numb
     }
 }
 
-function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>>, card: CardDTO, selectedCard: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1), selectedOpponent: string, playerName: string | null, setError: React.Dispatch<React.SetStateAction<string>>){
+function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>>, card: CardDTO, selectedCard: (CardNumber | -1), selectedOpponent: string, playerName: string | null, setError: React.Dispatch<React.SetStateAction<string>>){
     setError("")
 
     // no opponent override
     if (cardsWithOpponent.includes(card.number) && card.number != 5 && game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1){
         removeCardFromHand(game, playerName, card.number);
-        game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         incrementTurn(game);
         updateGameAndUpdateLobby(game.id,game);
         setCard(undefined);
@@ -115,9 +115,9 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
             if(game.players[i].name === selectedOpponent){
                 if (game.players[i].hand[0] === selectedCard){
                     game.players[i].hand = [];
-                    game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and guessed correctly that " + game.players[i].name + " had a " + cardInfo.get(selectedCard)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                    game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and guessed correctly that " + game.players[i].name + " had a " + CardInfo.get(selectedCard)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 } else {
-                    game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and guessed incorrectly that " + game.players[i].name + " had a " + cardInfo.get(selectedCard)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                    game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and guessed incorrectly that " + game.players[i].name + " had a " + CardInfo.get(selectedCard)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 }
             }
         }
@@ -127,8 +127,8 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     if (card.number === 2){
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
-                game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and looked at " + game.players[i].name + "'s hand.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
-                game.log.push({message: game.players[i].name + "'s hand: " + cardInfo.get(game.players[i].hand[0])?.name, timestamp: new Date(), sendingPlayer:null, receivingPlayers: [playerName!]});
+                game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and looked at " + game.players[i].name + "'s hand.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                game.log.push({message: game.players[i].name + "'s hand: " + CardInfo.get(game.players[i].hand[0])?.name, timestamp: new Date(), sendingPlayer:null, receivingPlayers: [playerName!]});
             }
         }
         removeCardFromHand(game, playerName, card.number);
@@ -139,14 +139,14 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
             if(game.players[i].name === selectedOpponent){
                 removeCardFromHand(game, playerName, card.number);
                 if (game.players[i].hand[0] < getPlayer(game, playerName)?.hand[0]!){
-                    game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and won the duel against " + game.players[i].name + ". " + game.players[i].name + " had a " + cardInfo.get(game.players[i].hand[0])?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                    game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and won the duel against " + game.players[i].name + ". " + game.players[i].name + " had a " + CardInfo.get(game.players[i].hand[0])?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                     game.players[i].hand = [];
 
                 } else if (game.players[i].hand[0] > getPlayer(game, playerName)?.hand[0]!){
-                    game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and lost the duel against " + game.players[i].name + ". " + getPlayer(game, playerName)?.name + " had a " + cardInfo.get(getPlayer(game, playerName)?.hand[0]!)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                    game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and lost the duel against " + game.players[i].name + ". " + getPlayer(game, playerName)?.name + " had a " + CardInfo.get(getPlayer(game, playerName)?.hand[0]!)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                     game.players[getPlayerIndex(game, playerName)].hand = [];
                 } else {
-                    game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and tied the duel against " + game.players[i].name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                    game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and tied the duel against " + game.players[i].name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 }
             }
         }
@@ -154,7 +154,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     //Maid
     if (card.number === 4){
         game.players[getPlayerIndex(game, playerName)].isProtected = true;
-        game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and protected themselves until their next turn.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and protected themselves until their next turn.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         removeCardFromHand(game, playerName, card.number);
     }
     //Prince
@@ -162,7 +162,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
         removeCardFromHand(game, playerName, card.number);
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
-                game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and forced " + game.players[i].name + " to discard their " + cardInfo.get(game.players[i].hand[0])?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and forced " + game.players[i].name + " to discard their " + CardInfo.get(game.players[i].hand[0])?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 if (game.players[i].hand.pop() !== 9){
                     game.players[i].hand.push(game.drawPile.pop()!);
                 }
@@ -174,7 +174,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     if (card.number === 7){
         for (let i = 0; i < game.players.length; i++){
             if(game.players[i].name === selectedOpponent){
-                game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and swapped hands with " + game.players[i].name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+                game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and swapped hands with " + game.players[i].name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
                 removeCardFromHand(game, playerName, card.number);
                 const temp = game.players[i].hand;
                 game.players[i].hand = game.players[getPlayerIndex(game, playerName)].hand;
@@ -184,14 +184,14 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     }
     //Countess
     if ([6, 8].includes(card.number)){
-        game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         removeCardFromHand(game, playerName, card.number);
     }
     //Princess
     if (card.number === 9){
-        game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " and lost the round.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " and lost the round.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         removeCardFromHand(game, playerName, card.number);
-        game.log.push({message: playerName + " discarded the " + cardInfo.get(getPlayer(game, playerName)?.hand[0]?? 1)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: playerName + " discarded the " + CardInfo.get(getPlayer(game, playerName)?.hand[0]?? 1)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         game.players[getPlayerIndex(game, playerName)].hand = [];
     }
     incrementTurn(game);
@@ -199,10 +199,10 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     setCard(undefined);
 }
 
-export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDTO | undefined, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>> ,changeCard: (card: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1)) => void, game: GameDTO}) {
+export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDTO | undefined, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>> ,changeCard: (card: (CardNumber | -1)) => void, game: GameDTO}) {
     const [playerName] = usePlayerName();
     const [selectedOpponent, setSelectedOpponent] = useState<string>("");
-    const [selectedCard, setSelectedCard] = useState<(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1)>(-1);
+    const [selectedCard, setSelectedCard] = useState<(CardNumber | -1)>(-1);
     const [error, setError] = useState<string>("");
     const isNoSelectableOpponent = game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1
     const handleClose = () => {
@@ -256,17 +256,17 @@ function OpponentDropdown({game, playerName, selectedOpponent, setSelectedOppone
     )
 }
 
-function CardDropdown({selectedCard, setSelectedCard, selectableCards, altTitle} : {selectedCard: number, setSelectedCard: React.Dispatch<React.SetStateAction<(1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1)>>, selectableCards: (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[], altTitle?: string}){
+function CardDropdown({selectedCard, setSelectedCard, selectableCards, altTitle} : {selectedCard: number, setSelectedCard: React.Dispatch<React.SetStateAction<(CardNumber | -1)>>, selectableCards: (CardNumber)[], altTitle?: string}){
     return (
         <FormControl variant="standard" className="width-100">
             <InputLabel>Card</InputLabel>
             <Select
                 variant="standard"
                 value={selectedCard}
-                onChange={(e) => {setSelectedCard(e.target.value as (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | -1))}}
+                onChange={(e) => {setSelectedCard(e.target.value as (CardNumber | -1))}}
             >
                 {selectableCards.map(card => {
-                        return <MenuItem value={card}>{cardInfo.get(card)?.name}</MenuItem>
+                        return <MenuItem value={card}>{CardInfo.get(card)?.name}</MenuItem>
                     }
                 )}
             </Select>
