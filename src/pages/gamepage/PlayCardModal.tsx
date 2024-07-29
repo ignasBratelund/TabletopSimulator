@@ -12,7 +12,7 @@ import React, {useState} from "react";
 import {usePlayerName} from "../usePlayerName";
 import {CardDTO, cardInfo, GameDTO} from "../models.types";
 import {updateGameAndUpdateLobby} from "../useFirestore";
-import {getPlayer, getPlayerIndex} from "./GamePage";
+import {getIsPlayersTurn, getPlayer, getPlayerIndex} from "./GamePage";
 
 const cardsWithOpponent = [1, 2, 3, 5, 7];
 const cardsMinusGuard = [2, 3, 4, 5, 6, 7, 8, 9] as (1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9)[];
@@ -90,7 +90,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
     setError("")
 
     // no opponent override
-    if (cardsWithOpponent.includes(card.number) && game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1){
+    if (cardsWithOpponent.includes(card.number) && card.number != 5 && game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1){
         removeCardFromHand(game, playerName, card.number);
         game.log.push({message: playerName + " played the " + cardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         incrementTurn(game);
@@ -225,7 +225,7 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
                 <Typography>{error.trimStart()}</Typography>
             </DialogContent>
             <DialogActions>
-                <Button type="submit" onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError)}>Play</Button>
+                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8))} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError)}>Play</Button>
             </DialogActions>
         </Dialog>
     )

@@ -182,12 +182,11 @@ export function GamePage() {
             {!playerName && <PlayerNameModal/>}
             {playedCard && <PlayCardModal card={playedCard} setCard={setPlayedCard} changeCard={changePlayedCard} game={game}/>}
             <div>
-                <Typography variant={"h2"} sx={{textAlign: "center", marginBottom: "64px"}}> {game?.name} </Typography>
+                <Typography variant={"h2"} sx={{textAlign: "center", marginBottom: "32px"}}> {game?.name} </Typography>
                 <BackButton/>
             </div>
             <Card className="game-height" sx={{width: "80%", justifySelf:"center"}}>
                 <div className="m-16 flex height-100-minus-32px">
-
                     <div className="flex-column flex-grow1">
                         <Typography variant={"h6"} sx={{textAlign: "center"}}>Players</Typography>
                         {game.players.map((player) => {
@@ -217,14 +216,10 @@ export function GamePage() {
                         <div className="flex margin-top-auto">
                             {getPlayer(game, playerName)?.hand.map((card) => {
                                 return (
-                                    <div className="flex-column margin-top-auto" key={card}>
-                                        {[5, 7].includes(card)}
-                                        <Button sx={{width: "60px", alignSelf:"center"}} disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card) && getPlayer(game, playerName)?.hand.includes(8))} onClick={() => setPlayedCard(cardInfo.get(card))}>Play</Button>
-                                        <Card sx={{height: "348px", width: "208px"}}
-                                        >{
-                                            <img src={cardInfo.get(card)!.image} alt="image" width={208} height={348}/>
-                                        }</Card>
-                                    </div>
+                                    <Card sx={{width: "100%", aspectRatio: "437/648", ":hover": {transform: "scale(1.05)"}}} onClick={() => setPlayedCard(cardInfo.get(card))}
+                                    >{
+                                        <img src={cardInfo.get(card)!.image} alt="image" width={"100%"} height={"100%"}/>
+                                    }</Card>
                                 );
                             })}
                         </div>

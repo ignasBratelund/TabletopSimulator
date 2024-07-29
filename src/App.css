@@ -72,7 +72,7 @@ html {background-color: whitesmoke}
 }
 
 .game-height {
-    height: calc(100vh - 200px);
+    height: calc(100vh - 150px);
 }
 
 .m-16 {
