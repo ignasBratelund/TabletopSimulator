@@ -1,15 +1,24 @@
 {
   "files": {
     "main.css": "/TabletopSimulator/static/css/main.90734f60.css",
-    "main.js": "/TabletopSimulator/static/js/main.4ea2b39b.js",
+    "main.js": "/TabletopSimulator/static/js/main.f43c2691.js",
     "static/js/453.35d7322d.chunk.js": "/TabletopSimulator/static/js/453.35d7322d.chunk.js",
+    "static/media/councilor-card.png": "/TabletopSimulator/static/media/councilor-card.4b237cd7ff4854c320fd.png",
+    "static/media/prince-card.png": "/TabletopSimulator/static/media/prince-card.0b90c4e456906683e6ca.png",
+    "static/media/countess-card.png": "/TabletopSimulator/static/media/countess-card.25e8f2c0afa18b909a9b.png",
+    "static/media/guard-card.png": "/TabletopSimulator/static/media/guard-card.ca470d62c019128f9c97.png",
+    "static/media/king-card.png": "/TabletopSimulator/static/media/king-card.aa749fb9caf429f35d69.png",
+    "static/media/princess-card.png": "/TabletopSimulator/static/media/princess-card.c8e6eee4f2b9db61c015.png",
+    "static/media/baron-card.png": "/TabletopSimulator/static/media/baron-card.51a5038ed537bcca7ab0.png",
+    "static/media/maid-card.png": "/TabletopSimulator/static/media/maid-card.7546470c61ba4e4c11fd.png",
+    "static/media/priest-card.png": "/TabletopSimulator/static/media/priest-card.eaab95eca47721f69931.png",
     "index.html": "/TabletopSimulator/index.html",
     "main.90734f60.css.map": "/TabletopSimulator/static/css/main.90734f60.css.map",
-    "main.4ea2b39b.js.map": "/TabletopSimulator/static/js/main.4ea2b39b.js.map",
+    "main.f43c2691.js.map": "/TabletopSimulator/static/js/main.f43c2691.js.map",
     "453.35d7322d.chunk.js.map": "/TabletopSimulator/static/js/453.35d7322d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.90734f60.css",
-    "static/js/main.4ea2b39b.js"
+    "static/js/main.f43c2691.js"
   ]
 }
