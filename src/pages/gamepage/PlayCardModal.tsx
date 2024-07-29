@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     Dialog,
     DialogActions,
@@ -311,10 +312,10 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
     }
 
     return (
-        <Dialog sx={{top : "-50%    "}} open={Object.keys(card).length > 0} onClose={handleClose}>
+        <Dialog open={Object.keys(card).length > 0} onClose={handleClose}>
             <DialogTitle>{card.name}</DialogTitle>
             <DialogContent sx={{width: 400, paddingBottom: 4}}>
-                <Typography>{card.description}</Typography>
+                <Typography sx={{marginBottom: 2}}>{card.description}</Typography>
                 {cardsWithOpponent.includes(card.number) &&
                     <OpponentDropdown game={game} playerName={playerName} selectedOpponent={selectedOpponent} setSelectedOpponent={setSelectedOpponent} showSelf={card.number === 5}/>
                 }
@@ -328,10 +329,11 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
                         })}
                     </div>
                 }
-                <Typography>{error.trimStart()}</Typography>
+                <Alert severity="error" sx={{display: error === "" ? "none" : "block"}}>{error.trimStart()}</Alert>
+                {/*<Typography>{error.trimStart()}</Typography>*/}
             </DialogContent>
             <DialogActions>
-                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8) ) || (getPlayer(game, playerName)?.hand.includes(-6) && card.number != -6)} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError, selectedCouncilorCards, possibleCouncilorCards)}>Play</Button>
+                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8) ) || (getPlayer(game, playerName)?.hand.includes(-6) && card.number != -6)} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError, selectedCouncilorCards, possibleCouncilorCards)}>{card.number === 6? "Lock in" : "Play"}</Button>
             </DialogActions>
         </Dialog>
     )
@@ -346,7 +348,7 @@ function OpponentDropdown({game, playerName, selectedOpponent, setSelectedOppone
         setSelectedOpponent(selectablePlayers[0].name);
     }
     return (
-    <FormControl variant="standard" className="width-100">
+    <FormControl sx={{marginBottom:2}} variant="standard" className="width-100">
         <InputLabel>Player</InputLabel>
         <Select
             variant="standard"
@@ -364,7 +366,7 @@ function OpponentDropdown({game, playerName, selectedOpponent, setSelectedOppone
 
 function CardDropdown({selectedCard, setSelectedCard, selectableCards} : {selectedCard: number, setSelectedCard: React.Dispatch<React.SetStateAction<(CardNumber | -1)>>, selectableCards: (CardNumber)[]}){
     return (
-        <FormControl variant="standard" className="width-100">
+        <FormControl sx={{marginBottom:2}} variant="standard" className="width-100">
             <InputLabel>Card</InputLabel>
             <Select
                 variant="standard"
@@ -383,7 +385,7 @@ function CardDropdown({selectedCard, setSelectedCard, selectableCards} : {select
 function CouncilorCardDropdown({selectedCard, setSelectedCards, selectableCards, index} : {selectedCard: CardNumber | -1, setSelectedCards: React.Dispatch<React.SetStateAction<(CardNumber | -1)[]>>, selectableCards: (CardNumber)[], index: number}){
     const titles = ["Card to keep", "Second card from bottom", "Bottom card"];
     return (
-        <FormControl variant="standard" className="width-100">
+        <FormControl sx={{marginBottom:2}} variant="standard" className="width-100">
             <InputLabel>{(selectableCards.length === 2 && index === 1)? titles[2] : titles[index]}</InputLabel>
             <Select
                 variant="standard"
