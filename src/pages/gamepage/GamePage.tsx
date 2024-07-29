@@ -209,7 +209,7 @@ export function GamePage() {
                     </div>
                     <div className="flex-column flex-grow2 align-center">
                         {game.turn !== -1 ?
-                            <Typography variant={"h6"} sx={{textAlign: "center"}}>{game.players[game.turn]?.name + "'s turn\t(" + (game.drawPile.length - 1) + " cards left)"}</Typography>
+                            <Typography variant={"h6"} sx={{textAlign: "center"}}>{getIsPlayersTurn(game, playerName)? "Your turn" : game.players[game.turn]?.name + "'s turn"} {"\t(" + (game.drawPile.length - 1) + " cards left)"}</Typography>
                             : getIsAdmin(game, playerName) && game.players.length > 1 &&
                             <Button sx={{width: "170px", alignSelf: "center"}} onClick={() => resetGame(game)}>Start new Round</Button>
                         }
