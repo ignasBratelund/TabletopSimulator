@@ -43,7 +43,7 @@ export type CardDTO = {
     image: string;
 }
 
-export type CardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type CardNumber = 1 | 2 | 3 | 4 | 5 | 6 | -6 | 7 | 8 | 9;
 
 export const CardInfo = new Map<CardNumber, CardDTO>([
     [1, {number: 1, name: "Guard", description: "Name an other player and guess what card they currently have (not possible to guess guard). If you are correct, they are eliminated.", count: 6, image: guardCard}],
@@ -52,6 +52,7 @@ export const CardInfo = new Map<CardNumber, CardDTO>([
     [4, {number: 4, name: "Maid", description: "Card abilities do not affect you until the start of your next turn.", count: 2, image: maidCard}],
     [5, {number: 5, name: "Prince", description: "Force any player to discard the card in their hand. They do not perform the card’s action. They immediately draw a new card.", count: 2, image: princeCard}],
     [6, {number: 6, name: "Counselor", description: "Draw two cards from the deck into your hand. Choose and keep one of the three cards now in your hand, and place the other two on the bottom of the deck in any order.", count: 2, image: councilorCard}],
+    [-6, {number: -6, name: "Counselor", description: "Draw two cards from the deck into your hand. Choose and keep one of the three cards now in your hand, and place the other two on the bottom of the deck in any order.", count: 2, image: councilorCard}],
     [7, {number: 7, name: "King", description: "Swap the remaining card in your hand with another player.", count: 1, image: kingCard}],
     [8, {number: 8, name: "Countess", description: "You must discard the Countess if the King or Prince is the other card in your hand. The card has no effect when played", count: 1, image: countessCard}],
     [9, {number: 9, name: "Princess", description: "You are immediately eliminated if you discard the Princess.", count: 1, image: princessCard}],

@@ -70,14 +70,13 @@ export function incrementTurn(game: GameDTO){
     }
 }
 
-function removeCardFromHand(game: GameDTO, playerName: string | null, card: number){
+function removeCardFromHand(game: GameDTO, playerName: string | null, card: CardNumber){
     if (playerName){
         for (let i = 0; i < game.players.length; i++){
             if (game.players[i].name === playerName){
                 for (let j = 0; j < game.players[i].hand.length; j++){
                     if (game.players[i].hand[j] === card){
                         game.players[i].hand.splice(j, 1);
-
                         return;
                     }
                 }
@@ -86,7 +85,54 @@ function removeCardFromHand(game: GameDTO, playerName: string | null, card: numb
     }
 }
 
-function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>>, card: CardDTO, selectedCard: (CardNumber | -1), selectedOpponent: string, playerName: string | null, setError: React.Dispatch<React.SetStateAction<string>>){
+function replaceCardFromHand(game: GameDTO, playerName: string | null, card: CardNumber, newCard: CardNumber){
+    if (playerName){
+        for (let i = 0; i < game.players.length; i++){
+            if (game.players[i].name === playerName){
+                for (let j = 0; j < game.players[i].hand.length; j++){
+                    if (game.players[i].hand[j] === card){
+                        game.players[i].hand[j] = newCard;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+
+function getOtherCardInHand(game: GameDTO, playerName: string | null, card: CardNumber){
+    if (playerName){
+        for (let i = 0; i < game.players.length; i++){
+            if (game.players[i].name === playerName){
+                if (game.players[i].hand.length == 2){
+                    return game.players[i].hand[0] === card ? game.players[i].hand[1] : game.players[i].hand[0];
+                }
+            }
+        }
+    }
+    console.log("No other card error")
+    return -1;
+}
+
+export function arrayEquals(a: any[], b: any[], ignoreOrdering: boolean){
+    if(a.length != b.length){
+        return false;
+    }
+    const aCopy = a.slice();
+    const bCopy = b.slice();
+    if (ignoreOrdering){
+        aCopy.sort();
+        bCopy.sort();
+    }
+    for (let i = 0; i < aCopy.length; i++){
+        if (aCopy[i] !== bCopy[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateAction<CardDTO | undefined>>, card: CardDTO, selectedCard: (CardNumber | -1), selectedOpponent: string, playerName: string | null, setError: React.Dispatch<React.SetStateAction<string>>, councilorSelectedCards: (CardNumber | -1)[], possibleCouncilorCards: CardNumber[]){
     setError("")
 
     // no opponent override
@@ -104,7 +150,12 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
             setError("Please select an opponent");
             return;
         }
+        if (getPlayer(game, selectedOpponent)?.isProtected){
+            setError("Selected player is protected and can not be selected");
+            return;
+        }
     }
+
     //Guard
     if (card.number === 1){
         if (selectedCard === -1){
@@ -169,7 +220,26 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
             }
         }
     }
-    //TODO: handle Councler
+    //Councilor
+    if (card.number === 6){
+        replaceCardFromHand(game, playerName, card.number, -6);
+        setCard(CardInfo.get(-6));
+        updateGameAndUpdateLobby(game.id,game);
+        return;
+    }
+    if (card.number === -6){
+        if(councilorSelectedCards.includes(-1) || !arrayEquals(councilorSelectedCards, possibleCouncilorCards, true)){
+            setError("Please select a card for each slot, only using each card once");
+            return
+        }
+        game.players[getPlayerIndex(game, playerName)].hand = [councilorSelectedCards[0] as CardNumber];
+        const extraCard = game.drawPile.shift();
+        game.drawPile.unshift(councilorSelectedCards[1] as CardNumber);
+        game.drawPile.unshift(councilorSelectedCards[2] as CardNumber);
+        game.drawPile.unshift(extraCard!);
+        game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + ".", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
+        game.log.push({message: "The card on the bottom and the second card from the bottom are now respectively " + councilorSelectedCards[2] + " and " + councilorSelectedCards[1] + ".", timestamp: new Date(), sendingPlayer:null, receivingPlayers: [playerName!]});
+    }
     //King
     if (card.number === 7){
         for (let i = 0; i < game.players.length; i++){
@@ -204,6 +274,7 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
     const [selectedOpponent, setSelectedOpponent] = useState<string>("");
     const [selectedCard, setSelectedCard] = useState<(CardNumber | -1)>(-1);
     const [error, setError] = useState<string>("");
+    const [councilorSelectedCards, setCouncilorSelectedCards] = useState<(CardNumber | -1)[]>([-1, -1, -1])
     const isNoSelectableOpponent = game.players.filter(player => player.hand.length > 0 && !player.isProtected).length === 1
     const handleClose = () => {
         changeCard(-1);
@@ -211,6 +282,8 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
     if (!card){
         return null;
     }
+    console.log(councilorSelectedCards)
+    const possibleCouncilorCards = [getOtherCardInHand(game, playerName, -6), game.drawPile[game.drawPile.length - 2], game.drawPile[game.drawPile.length - 1]] as CardNumber[];
     return (
         <Dialog sx={{top : "-50%    "}} open={Object.keys(card).length > 0} onClose={handleClose}>
             <DialogTitle>{card.name}</DialogTitle>
@@ -222,10 +295,17 @@ export function PlayCardModal( {card, setCard, changeCard, game} : {card: CardDT
                 {card.number === 1 && !isNoSelectableOpponent &&
                     <CardDropdown selectedCard={selectedCard} setSelectedCard={setSelectedCard} selectableCards={cardsMinusGuard}/>
                 }
+                {card.number === -6 &&
+                    <div>
+                        <CouncilorCardDropdown selectedCard={councilorSelectedCards[0]} setSelectedCards={setCouncilorSelectedCards} selectableCards={possibleCouncilorCards} title="Card to keep" index={0}/>
+                        <CouncilorCardDropdown selectedCard={councilorSelectedCards[1]} setSelectedCards={setCouncilorSelectedCards} selectableCards={possibleCouncilorCards} title="Second card from bottom" index={1}/>
+                        <CouncilorCardDropdown selectedCard={councilorSelectedCards[2]} setSelectedCards={setCouncilorSelectedCards} selectableCards={possibleCouncilorCards} title="Bottom card" index={2}/>
+                    </div>
+                }
                 <Typography>{error.trimStart()}</Typography>
             </DialogContent>
             <DialogActions>
-                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8))} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError)}>Play</Button>
+                <Button type="submit" disabled={!getIsPlayersTurn(game, playerName) || ([5, 7].includes(card.number) && getPlayer(game, playerName)?.hand.includes(8) ) || (getPlayer(game, playerName)?.hand.includes(-6) && card.number != -6)} onClick={() => resolveCard(game, setCard, card, selectedCard, selectedOpponent, playerName, setError, councilorSelectedCards, possibleCouncilorCards)}>Play</Button>
             </DialogActions>
         </Dialog>
     )
@@ -256,7 +336,7 @@ function OpponentDropdown({game, playerName, selectedOpponent, setSelectedOppone
     )
 }
 
-function CardDropdown({selectedCard, setSelectedCard, selectableCards, altTitle} : {selectedCard: number, setSelectedCard: React.Dispatch<React.SetStateAction<(CardNumber | -1)>>, selectableCards: (CardNumber)[], altTitle?: string}){
+function CardDropdown({selectedCard, setSelectedCard, selectableCards} : {selectedCard: number, setSelectedCard: React.Dispatch<React.SetStateAction<(CardNumber | -1)>>, selectableCards: (CardNumber)[]}){
     return (
         <FormControl variant="standard" className="width-100">
             <InputLabel>Card</InputLabel>
@@ -264,6 +344,27 @@ function CardDropdown({selectedCard, setSelectedCard, selectableCards, altTitle}
                 variant="standard"
                 value={selectedCard}
                 onChange={(e) => {setSelectedCard(e.target.value as (CardNumber | -1))}}
+            >
+                {selectableCards.map(card => {
+                        return <MenuItem value={card}>{CardInfo.get(card)?.name}</MenuItem>
+                    }
+                )}
+            </Select>
+        </FormControl>
+    )
+}
+
+function CouncilorCardDropdown({selectedCard, setSelectedCards, selectableCards, title, index} : {selectedCard: CardNumber | -1, setSelectedCards: React.Dispatch<React.SetStateAction<(CardNumber | -1)[]>>, selectableCards: (CardNumber)[], title: string, index: number}){
+    return (
+        <FormControl variant="standard" className="width-100">
+            <InputLabel>{title}</InputLabel>
+            <Select
+                variant="standard"
+                value={selectedCard}
+                onChange={(e) => {setSelectedCards((prevState) => {
+                    prevState[index] = e.target.value as (CardNumber | -1);
+                    return [...prevState];
+                })}}
             >
                 {selectableCards.map(card => {
                         return <MenuItem value={card}>{CardInfo.get(card)?.name}</MenuItem>
