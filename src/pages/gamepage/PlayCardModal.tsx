@@ -12,7 +12,7 @@ import {
 import React, {useState} from "react";
 import {usePlayerName} from "../usePlayerName";
 import {CardDTO, CardInfo, CardNumber, GameDTO} from "../models.types";
-import {updateGameAndUpdateLobby} from "../useFirestore";
+import {updateGame} from "../useFirestore";
 import {getIsPlayersTurn, getPlayer, getPlayerIndex} from "./GamePage";
 
 const cardsWithOpponent = [1, 2, 3, 5, 7];
@@ -141,7 +141,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
         removeCardFromHand(game, playerName, card.number);
         game.log.push({message: playerName + " played the " + CardInfo.get(card.number)?.name + " to no effect.", timestamp: new Date(), sendingPlayer:playerName, receivingPlayers: game.players.map(p => p.name)});
         incrementTurn(game);
-        updateGameAndUpdateLobby(game.id,game);
+        updateGame(game.id,game);
         setCard(undefined);
         return;
     }
@@ -228,7 +228,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
         } else {
             replaceCardFromHand(game, playerName, card.number, -6);
             setCard(CardInfo.get(-6));
-            updateGameAndUpdateLobby(game.id,game);
+            updateGame(game.id,game);
             return;
         }
     }
@@ -285,7 +285,7 @@ function resolveCard(game: GameDTO, setCard:  React.Dispatch<React.SetStateActio
         game.players[getPlayerIndex(game, playerName)].hand = [];
     }
     incrementTurn(game);
-    updateGameAndUpdateLobby(game.id,game);
+    updateGame(game.id,game);
     setCard(undefined);
 }
 

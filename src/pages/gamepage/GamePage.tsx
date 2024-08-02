@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {Box, Button, Card, Chip, IconButton, Typography} from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import {doc, onSnapshot} from "firebase/firestore";
-import {db, updateGameAndUpdateLobby} from "../useFirestore";
+import {db, updateGame, updateGameAndUpdateLobby} from "../useFirestore";
 import {CardDTO, CardInfo, CardNumber, GameDTO} from "../models.types";
 import {usePlayerName} from "../usePlayerName";
 import {incrementTurn, PlayCardModal} from "./PlayCardModal";
@@ -98,7 +98,7 @@ function resetGame(game: GameDTO) {
         }
     }
     game.log.push({message: "A new round has started", timestamp: new Date(), sendingPlayer:null, receivingPlayers: game.players.map(p => p.name)});
-    updateGameAndUpdateLobby(game.id, game);
+    updateGame(game.id, game);
 }
 
 function nextColor(game: GameDTO) {

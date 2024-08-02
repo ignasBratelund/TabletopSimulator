@@ -53,3 +53,7 @@ export const updateGameAndUpdateLobby = async (id: string, object: any) => {
         updateDocument("lobbyController", "1", {i: Math.random().toString(36).substring(3)})
     })
 }
+
+export const updateGame = async (id: string, object: any) => {
+    await updateDocument("game", id, object)
+}
